@@ -110,4 +110,4 @@ end
 
 pull_projects
 pull_issues
-push_issues
+# push_issues
