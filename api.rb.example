@@ -1,5 +1,7 @@
 Things = app("Things")
 
+$include_project_identifiers = []
+
 class Issue < ActiveResource::Base
   self.site = "http://your-redmine-domain"
   self.user = "your-user-name"

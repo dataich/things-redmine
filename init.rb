@@ -1,14 +1,19 @@
+$KCODE = 'UTF-8'
+
 require 'rubygems'
 require 'active_resource'
 require 'appscript'
 include Appscript
 require 'api'
 
+$include_id = []
+
 def pull_projects  
   @redmine_projects = Project.find(:all)
   @things_projects = Things.projects.get()
   @things_projects_collected = @things_projects.collect {|project| project.name.get()}
-  @redmine_projects.each do |project|
+  @redmine_projects.select{|x| $include_project_identifiers.index(x.identifier) != nil}.each do |project|
+    $include_id.push(project.id)
     if @things_projects_collected.index(project.name).nil?
       Things.make(:new => :project, :with_properties => {:name => project.name})
     end
@@ -30,6 +35,8 @@ end
 def pull_issues
   @redmine_issues = Issue.find(:all)
   @redmine_issues.each do |rs|
+    next if $include_id.index(rs.project.id) == nil
+
     begin
       tag = Things.tags['issue-id-'+rs.id].to_dos.get
       puts "Updating #{rs.subject}"      
